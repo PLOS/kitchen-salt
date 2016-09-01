@@ -117,6 +117,12 @@ module Kitchen
         "#{sudo('rm')} -rf #{config[:root_path]} ; mkdir -p #{config[:root_path]}"
       end
 
+      def prepare_command
+        debug('RUNNING prepare_command')
+        cmd = sudo("salt-call --config-dir=#{File.join(config[:root_path], config[:salt_config])} --local saltutil.sync_all")
+        cmd << " --log-level=#{config[:log_level]}" if config[:log_level]
+      end
+
       def salt_command
         salt_version = config[:salt_version]
         cmd = sudo("salt-call --config-dir=#{File.join(config[:root_path], config[:salt_config])} --local state.highstate")
